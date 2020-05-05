@@ -23,7 +23,7 @@ function sign(url: URL) {
  * Adapted from https://stackoverflow.com/a/27979933/1352334 (hgoebl)
  */
 function escapeAttr(attr: string): string {
-  return attr.replace(/[<>&'"]/g, c => {
+  return attr.replace(/[<>&'"]/g, (c) => {
     switch (c) {
       case "<":
         return "&lt;";
@@ -113,13 +113,18 @@ type resolver = (
   res: Response
 ) => React.ComponentType<any>;
 
+interface ServeFragmentOptions {
+  onStream?: (stream: NodeJS.ReadableStream) => void;
+}
+
 /**
  * Checks the signature, renders the given fragment as HTML and injects the initial props in a <script> tag.
  */
 export async function serveFragment(
   req: Request,
   res: Response,
-  resolve: resolver
+  resolve: resolver,
+  { onStream }: ServeFragmentOptions = {}
 ) {
   const url = new URL(req.url, "http://example.com");
   const expectedSign = url.searchParams.get("sign");
@@ -143,7 +148,7 @@ export async function serveFragment(
     ? await (Component as any).getInitialProps({
         props: baseChildProps,
         req,
-        res
+        res,
       })
     : baseChildProps;
 
@@ -161,6 +166,10 @@ export async function serveFragment(
       <Component {...childProps} />
     </div>
   );
+  if (onStream) {
+    onStream(stream);
+  }
+
   const removeReactRootStream = new RemoveReactRoot();
   stream.pipe(
     removeReactRootStream,

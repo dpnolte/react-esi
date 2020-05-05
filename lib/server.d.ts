@@ -14,8 +14,11 @@ interface IEsiProps {
  */
 export declare const createIncludeElement: (fragmentID: string, props: object, esi: IEsiProps) => string;
 declare type resolver = (fragmentID: string, props: object, req: Request, res: Response) => React.ComponentType<any>;
+interface ServeFragmentOptions {
+    onStream?: (stream: NodeJS.ReadableStream) => void;
+}
 /**
  * Checks the signature, renders the given fragment as HTML and injects the initial props in a <script> tag.
  */
-export declare function serveFragment(req: Request, res: Response, resolve: resolver): Promise<void>;
+export declare function serveFragment(req: Request, res: Response, resolve: resolver, { onStream }?: ServeFragmentOptions): Promise<void>;
 export {};
