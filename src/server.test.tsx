@@ -48,6 +48,55 @@ test("serveFragment", async () => {
   expect(response.text).toMatchSnapshot();
 });
 
+test("serveFragment complex", async () => {
+  const app = express();
+  const resolver = (
+    fragmentID: string,
+    props: object,
+    req: express.Request,
+    res: express.Response
+  ) => {
+    expect(fragmentID).toBe("fragmentID");
+    expect(props).toMatchObject({ name: "Kévin" });
+    expect(req.header("user-agent")).toBe("test");
+    expect(res).toBeDefined();
+
+    return (p: { name: string }) => {
+      return (
+        <div className="css-a5qmhs e1e5uckb0">
+          <div className="css-910pwr e1e5uckb1">
+            <img
+              src="/static/media/yoda.e216d82d.svg"
+              className="css-r62z6h e1e5uckb2"
+            />
+            <h2>Page 3</h2>
+          </div>
+          <p className="css-iqjf8m e1e5uckb3">
+            To get started, edit
+            <code>src/apps/Page3/App.tsx</code>
+            and save to reload.
+          </p>
+          <ul className="css-o9b79t e1e5uckb4">
+            <li className="css-bkrwwc e1e5uckb5">
+              <a href="/">Go back home</a>
+            </li>
+          </ul>
+        </div>
+      );
+    };
+  };
+
+  app.get(path, (req: express.Request, res: express.Response) =>
+    serveFragment(req, res, resolver)
+  );
+
+  const response: any = await request(app)
+    .get(fragmentURL)
+    .set("user-agent", "test")
+    .expect(200);
+  expect(response.text).toMatchSnapshot();
+});
+
 test("initial props", async () => {
   const app = express();
   const resolver = (

@@ -1,7 +1,11 @@
 import crypto from "crypto";
 import { Request, Response } from "express";
 import React from "react";
-import { renderToNodeStream } from "react-dom/server";
+import {
+  renderToNodeStream,
+  renderToStaticNodeStream,
+  renderToStaticMarkup,
+} from "react-dom/server";
 import { Transform } from "stream";
 
 export const path = process.env.REACT_ESI_PATH || "/_fragment";
@@ -160,26 +164,32 @@ export async function serveFragment(
     `<script>window.__REACT_ESI__ = window.__REACT_ESI__ || {}; window.__REACT_ESI__['${fragmentID}'] = ${encodedProps};document.currentScript.remove();</script>`
   );
 
-  // Wrap the content in a div having the data-reactroot attribute, to be removed
-  const stream = renderToNodeStream(
-    <div>
-      <Component {...childProps} />
-    </div>
-  );
+  const markup = renderToStaticMarkup(<Component {...childProps} />);
+  res.write(markup);
+  res.end();
 
-  const removeReactRootStream = new RemoveReactRoot();
-  stream.pipe(
-    removeReactRootStream,
-    { end: false }
-  );
-  removeReactRootStream.pipe(
-    res,
-    { end: false }
-  );
+  // const stream = renderToStaticNodeStream(<Component {...childProps} />);
 
-  if (onStream) {
-    onStream(stream);
-  }
+  // // // Wrap the content in a div having the data-reactroot attribute, to be removed
+  // // const stream = renderToNodeStream(
+  // //   <div>
+  // //     <Component {...childProps} />
+  // //   </div>
+  // // );
 
-  stream.on("end", () => res.end());
+  // // const removeReactRootStream = new RemoveReactRoot();
+  // // stream.pipe(
+  // //   removeReactRootStream,
+  // //   { end: false }
+  // // );
+  // // removeReactRootStream.pipe(
+  // //   res,
+  // //   { end: false }
+  // // );
+
+  // if (onStream) {
+  //   onStream(stream);
+  // }
+
+  // stream.on("end", () => res.end());
 }

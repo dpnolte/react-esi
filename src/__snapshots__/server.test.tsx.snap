@@ -7,3 +7,5 @@ exports[`initial props 1`] = `"<script>window.__REACT_ESI__ = window.__REACT_ESI
 exports[`invalid signature 1`] = `"Bad signature"`;
 
 exports[`serveFragment 1`] = `"<script>window.__REACT_ESI__ = window.__REACT_ESI__ || {}; window.__REACT_ESI__['fragmentID'] = {\\"name\\":\\"Kévin\\"};document.currentScript.remove();</script><div>Hello <!-- -->Kévin</div>"`;
+
+exports[`serveFragment complex 1`] = `"<script>window.__REACT_ESI__ = window.__REACT_ESI__ || {}; window.__REACT_ESI__['fragmentID'] = {\\"name\\":\\"Kévin\\"};document.currentScript.remove();</script><div class=\\"css-a5qmhs e1e5uckb0\\"><div class=\\"css-910pwr e1e5uckb1\\"><img src=\\"/static/media/yoda.e216d82d.svg\\" class=\\"css-r62z6h e1e5uckb2\\"/><h2>Page 3</h2></div><p class=\\"css-iqjf8m e1e5uckb3\\">To get started, edit<code>src/apps/Page3/App.tsx</code>and save to reload.</p><ul class=\\"css-o9b79t e1e5uckb4\\"><li class=\\"css-bkrwwc e1e5uckb5\\"><a href=\\"/\\">Go back home</a></li></ul></div>"`;
