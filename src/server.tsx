@@ -113,7 +113,7 @@ type resolver = (
   res: Response
 ) => React.ComponentType<any>;
 
-interface ServeFragmentOptions {
+interface IServeFragmentOptions {
   onStream?: (stream: NodeJS.ReadableStream) => void;
 }
 
@@ -124,7 +124,7 @@ export async function serveFragment(
   req: Request,
   res: Response,
   resolve: resolver,
-  { onStream }: ServeFragmentOptions = {}
+  { onStream }: IServeFragmentOptions = {}
 ) {
   const url = new URL(req.url, "http://example.com");
   const expectedSign = url.searchParams.get("sign");
@@ -166,9 +166,6 @@ export async function serveFragment(
       <Component {...childProps} />
     </div>
   );
-  if (onStream) {
-    onStream(stream);
-  }
 
   const removeReactRootStream = new RemoveReactRoot();
   stream.pipe(
@@ -179,6 +176,10 @@ export async function serveFragment(
     res,
     { end: false }
   );
+
+  if (onStream) {
+    onStream(stream);
+  }
 
   stream.on("end", () => res.end());
 }
