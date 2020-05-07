@@ -106,16 +106,16 @@ class RemoveReactRoot extends Transform {
   }
 }
 
+interface IServeFragmentOptions {
+  pipeStream?: (stream: NodeJS.ReadableStream) => NodeJS.ReadableStream;
+}
+
 type resolver = (
   fragmentID: string,
   props: object,
   req: Request,
   res: Response
 ) => React.ComponentType<any>;
-
-interface IServeFragmentOptions {
-  pipeStream?: (stream: NodeJS.ReadableStream) => NodeJS.ReadableStream;
-}
 
 /**
  * Checks the signature, renders the given fragment as HTML and injects the initial props in a <script> tag.
@@ -172,6 +172,7 @@ export async function serveFragment(
     removeReactRootStream,
     { end: false }
   );
+
   let lastStream: NodeJS.ReadableStream = removeReactRootStream;
   if (options.pipeStream) {
     lastStream = options.pipeStream(removeReactRootStream);
