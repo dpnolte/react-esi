@@ -124,7 +124,7 @@ export async function serveFragment(
   req: Request,
   res: Response,
   resolve: resolver,
-  { pipeStream }: IServeFragmentOptions = {}
+  options: IServeFragmentOptions = {}
 ) {
   const url = new URL(req.url, "http://example.com");
   const expectedSign = url.searchParams.get("sign");
@@ -160,12 +160,6 @@ export async function serveFragment(
     `<script>window.__REACT_ESI__ = window.__REACT_ESI__ || {}; window.__REACT_ESI__['${fragmentID}'] = ${encodedProps};document.currentScript.remove();</script>`
   );
 
-  // const markup = renderToStaticMarkup(<Component {...childProps} />);
-  // res.write(markup);
-  // res.end();
-
-  // const stream = renderToStaticNodeStream(<Component {...childProps} />);
-
   // Wrap the content in a div having the data-reactroot attribute, to be removed
   const stream = renderToNodeStream(
     <div>
@@ -179,8 +173,8 @@ export async function serveFragment(
     { end: false }
   );
   let lastStream: NodeJS.ReadableStream = removeReactRootStream;
-  if (pipeStream) {
-    lastStream = pipeStream(removeReactRootStream);
+  if (options.pipeStream) {
+    lastStream = options.pipeStream(removeReactRootStream);
   }
   lastStream.pipe(
     res,
