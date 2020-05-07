@@ -1,11 +1,7 @@
 import crypto from "crypto";
 import { Request, Response } from "express";
 import React from "react";
-import {
-  renderToNodeStream,
-  renderToStaticNodeStream,
-  renderToStaticMarkup,
-} from "react-dom/server";
+import { renderToNodeStream } from "react-dom/server";
 import { Transform } from "stream";
 
 export const path = process.env.REACT_ESI_PATH || "/_fragment";
